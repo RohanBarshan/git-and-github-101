@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Git + GitHub | Skill Session</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap");
+:root{
+  --bg:#fbf8f3;
+  --paper:#fffdf9;
+  --ink:#1f1f1f;
+  --muted:#55585c;
+  --line:#d7d7d7;
+  --line-dark:#9b9b9b;
+  --blue:#8c1d40;
+  --orange:#9b6a00;
+  --green:#2f6b4f;
+  --red:#b3261e;
+  --code:#f4f4f4;
+  --gold:#ffc627;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Inter", "Helvetica Neue", Arial, sans-serif}
+body{display:flex}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;background:var(--bg);padding:52px 72px 62px}
+.slide.active{display:block}
+.frame{height:100%;max-width:1220px;margin:0 auto;display:flex;flex-direction:column}
+.topline{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--blue);padding-bottom:11px;margin-bottom:34px}
+.section{font:700 13px/1.2 "Inter", "Helvetica Neue", Arial, sans-serif;letter-spacing:0;color:var(--ink)}
+.slide-no{margin-left:auto;font:600 13px/1.2 "Inter", "Helvetica Neue", Arial, sans-serif;color:#767676}
+h1{font-family:"Playfair Display", Georgia, "Times New Roman", serif;font-size:clamp(58px,7vw,92px);line-height:.96;letter-spacing:-.035em;margin:0;max-width:1000px;font-weight:700;font-style:italic;color:var(--blue)}
+h2{font-family:"Playfair Display", Georgia, "Times New Roman", serif;font-size:clamp(40px,4.5vw,58px);line-height:1.04;letter-spacing:-.025em;margin:0 0 30px;max-width:1080px;font-weight:700}
+h3{font-family:"Playfair Display", Georgia, "Times New Roman", serif;font-size:20px;margin:0 0 10px;line-height:1.25;font-weight:800;letter-spacing:-.015em}
+p{font-family:"Inter", "Helvetica Neue", Arial, sans-serif;font-size:20px;line-height:1.5;margin:0 0 12px;color:var(--muted);font-weight:400;letter-spacing:-.004em}
+.lead{font-family:"Inter", "Helvetica Neue", Arial, sans-serif;font-size:26px;line-height:1.48;max-width:900px;margin-top:24px;color:#3a3733;font-weight:400;letter-spacing:-.006em}
+.section{text-transform:uppercase;letter-spacing:.14em;color:#4b4540}
+.topline{font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace}
+.big-note{font-size:24px;color:var(--ink);max-width:940px;line-height:1.45}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.columns.thirds{grid-template-columns:1fr 1fr 1fr;gap:30px}
+.block{border-top:1.5px solid #3f3f3f;padding-top:15px}
+.block.blue{border-color:var(--blue)}
+.block.orange{border-color:var(--gold)}
+.block.green{border-color:var(--green)}
+.block p{font-size:18px}
+.code{font:16.5px/1.65 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;background:var(--code);border:1px solid #d0d0d0;padding:18px 20px;white-space:pre-wrap;color:#202124}
+.code.large{font-size:20px}
+.cmd{color:var(--blue);font-weight:700}.arg{color:#7b5700}.comment{color:#737373}
+.command-table{border-top:2px solid #444}
+.command-row{display:grid;grid-template-columns:300px 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--line)}
+.command-row code{font:600 16px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;color:#202124}
+.command-row span{font-size:17px;line-height:1.4;color:var(--muted)}
+.flow{display:grid;grid-template-columns:1fr 82px 1fr 82px 1fr 82px 1fr;align-items:center;margin-top:24px}
+.state{min-height:140px;border:1px solid #a9a9a9;background:var(--paper);padding:20px;display:flex;flex-direction:column;justify-content:center}
+.state b{font-size:20px}.state small{font-size:15px;line-height:1.4;color:var(--muted);margin-top:7px}
+.arrow{text-align:center;color:#333}
+.arrow .shaft{font:28px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace}.arrow .label{font:600 12px/1.2 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;color:var(--blue);margin-bottom:8px}
+.callout{border-left:3px solid var(--blue);padding:10px 0 10px 16px;margin-top:22px;color:#35312e;font-size:16.5px;line-height:1.55;background:#f5f0e9}
+.callout.orange{border-color:var(--gold)}
+.diagram{background:var(--paper);border:1px solid #b7b7b7;padding:22px;font:17px/1.75 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;white-space:pre}
+.steps{counter-reset:item;margin:0;padding:0;list-style:none;max-width:1000px}
+.steps li{counter-increment:item;display:grid;grid-template-columns:42px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);font-size:20px;line-height:1.4}
+.steps li:before{content:counter(item, decimal-leading-zero);font:700 14px/1.8 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;color:var(--blue)}
+.status-shot{width:100%;max-height:460px;object-fit:contain;border:1px solid #b7b7b7;background:white}
+.legend{display:grid;gap:13px;margin-top:8px}
+.legend-row{display:grid;grid-template-columns:38px 1fr;gap:14px;align-items:start}
+.tag{width:30px;height:30px;border:1px solid currentColor;display:grid;place-items:center;font:700 17px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace}
+.tag.u{color:#2469a0}.tag.m{color:#b15a00}
+.branch-map{font:17px/1.8 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;background:#fff;border:1px solid #b7b7b7;padding:20px}
+.controls{position:absolute;right:24px;bottom:18px;display:flex;gap:6px;z-index:10}
+.controls button{border:1px solid #999;background:#fff;color:var(--ink);padding:7px 11px;font:600 14px "Inter", "Helvetica Neue", Arial, sans-serif;cursor:pointer}
+.controls button:hover{background:#f3f3f3}
+.progress{position:absolute;left:0;bottom:0;height:4px;background:var(--gold);transition:width .18s ease}
+.footer-note{margin-top:auto;padding-top:18px;font:500 14px/1.4 "Inter", "Helvetica Neue", Arial, sans-serif;color:#717171}
+.slide:first-child .topline{border-bottom-color:var(--gold)}
+.slide:first-child .lead{max-width:820px}
+@media(max-width:900px){.slide{padding:34px 28px 56px}.columns,.columns.thirds{grid-template-columns:1fr}.flow{grid-template-columns:1fr;gap:8px}.arrow .shaft{transform:rotate(90deg)}.frame{overflow:auto}.status-shot{max-height:none}}
+@media print{html,body{overflow:visible;height:auto}.deck{height:auto}.slide{position:relative;display:block!important;width:13.333in;height:7.5in;page-break-after:always}.controls,.progress{display:none}}
+
+.branch-flow{display:grid;grid-template-columns:1fr 54px 1fr 54px 1fr 54px 1fr;align-items:center;gap:0;margin-top:18px}
+.flow-step{border:1px solid #aaa;background:var(--paper);padding:18px 16px;min-height:128px;display:flex;flex-direction:column;justify-content:center}
+.flow-step strong{font-family:"Playfair Display",Georgia,serif;font-size:20px;line-height:1.2;margin-bottom:8px}
+.flow-step span{font-size:16px;line-height:1.4;color:var(--muted)}
+.flow-arrow{text-align:center;font:24px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;color:#555}
+.fork-flow{display:grid;grid-template-columns:1fr 48px 1fr 48px 1fr;align-items:center;gap:0;margin-top:14px}
+.fork-note{font-size:17px;line-height:1.45;color:var(--muted);margin-top:16px}
+h2 code{font-family:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit;color:inherit}
+.practice-slide .steps li{padding:10px 0;font-size:18px}
+.practice-slide h2{margin-bottom:22px}
+@media(max-width:900px){.branch-flow,.fork-flow{grid-template-columns:1fr;gap:8px}.flow-arrow{transform:rotate(90deg);padding:4px}}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide active"><div class="frame">
+<div class="topline"><span class="section">Skill Session</span><span class="slide-no"></span></div>
+<div style="margin-top:7vh">
+<h1>Git + GitHub</h1>
+<p class="lead">This session introduces version control using a shared workshop repository. We will first cover the ideas behind Git and GitHub, then use forks, branches, commits, pull requests, and VS Code to work through the same workflow together.</p>
+</div>
+<div class="footer-note">Use the arrow keys or Space to move through the deck.</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Plan</span><span class="slide-no"></span></div>
+<h2>We will understand the workflow before we start typing commands.</h2>
+<div class="columns thirds">
+<div class="block blue"><h3>First, the theory</h3><p>We will define Git, GitHub, repositories, branches, staging, commits, remotes, and pull requests. The goal is to understand why each step exists before using the command for it.</p></div>
+<div class="block"><h3>Then, the workflow</h3><p>Everyone will start from the same workshop repository, create a personal fork on GitHub, then work on a branch inside that fork. We will use the terminal only after the core ideas are clear.</p></div>
+<div class="block orange"><h3>Finally, collaboration</h3><p>Each branch will be submitted back to the original repository through a pull request. I will merge the pull requests into main, then everyone will pull the updated main branch and see the combined changes.</p></div>
+</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Theory</span><span class="slide-no"></span></div>
+<h2>Git, GitHub, and VS Code have different jobs.</h2>
+<div class="columns thirds">
+<div class="block orange"><h3>Git</h3><p>Git is version control software that runs on your computer. It records changes to files, creates commits, and lets you work on separate branches without making a new copy of the project folder.</p></div>
+<div class="block blue"><h3>GitHub</h3><p>GitHub stores Git repositories online. It also provides collaboration features such as pull requests, code review, issues, and repository permissions.</p></div>
+<div class="block"><h3>VS Code</h3><p>VS Code is the editor we will use to change files. Its Source Control panel reads information from Git and shows the same file states that commands such as <code>git status</code> report in the terminal.</p></div>
+</div>
+</div></section>
+
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Theory</span><span class="slide-no"></span></div>
+<h2>A repository can exist locally and on GitHub.</h2>
+<div class="columns">
+<div class="block blue"><h3>Local repository</h3><p>This is the copy on your computer. You can edit files, create branches, stage changes, and make commits locally even when you are not connected to GitHub.</p></div>
+<div class="block orange"><h3>Remote repository</h3><p>This is a copy of the repository hosted somewhere else, such as GitHub. A local repository can save one or more remote names so Git knows which other repositories it can exchange commits with.</p></div>
+</div>
+<div class="callout">A remote is a saved name for another Git repository and its URL. We will create the specific origin and upstream remotes after the theory section, when we set up our forks.</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Theory</span><span class="slide-no"></span></div>
+<h2>Staging lets you choose what belongs in the next commit.</h2>
+<div class="columns" style="grid-template-columns:.9fr 1.1fr">
+<div>
+<p>Edited tracked files are <strong>modified</strong>. New files are <strong>untracked</strong> until Git includes them.</p>
+<p>Staging selects the exact changes for the next commit.</p>
+<p>A commit saves those staged changes locally. Nothing reaches GitHub until you push.</p>
+</div>
+<img alt="Visual explanation of staging changes before a commit" class="status-shot" src="visual-staging.png">
+</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Theory</span><span class="slide-no"></span></div>
+<h2>Branches keep work separate from <code>main</code>.</h2>
+
+<div>
+<div class="branch-flow">
+<div class="flow-step"><strong>main</strong><span>The shared starting point for the project.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Create a branch</strong><span>The branch starts from the current commit on main.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Make commits</strong><span>Your work continues on the branch without changing main.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Merge later</strong><span>A pull request can bring the branch changes back into main after review.</span></div>
+</div>
+<p style="margin-top:20px">A branch is another line of development inside the same Git history. It does not create a separate project folder. The arrows show the order of the workflow, not files being physically moved from one box to another.</p>
+<p>A pull request asks to merge one branch into another. After the pull request is merged, other local copies still need to pull the updated branch before they can see the new commits.</p>
+</div>
+
+</div></section><section class="slide"><div class="frame">
+<div class="topline"><span class="section">Workflow setup</span><span class="slide-no"></span></div>
+<h2>Each person will work from a fork of the workshop repository.</h2>
+<div class="fork-flow">
+<div class="flow-step"><strong>Original repository</strong><span>This is the workshop repository that I maintain.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Your fork</strong><span>GitHub creates your own copy of the repository under your account.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Your computer</strong><span>You clone your fork, create a branch, and make commits locally.</span></div>
+</div>
+<div class="fork-flow" style="margin-top:14px">
+<div class="flow-step"><strong>Push to origin</strong><span>Your branch is pushed to your fork. In this workflow, origin means your fork.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Open a pull request</strong><span>The pull request proposes your branch changes to the original repository.</span></div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><strong>Pull from upstream</strong><span>After the merge, upstream lets you bring the updated original main branch back to your computer.</span></div>
+</div>
+<p class="fork-note"><strong>origin</strong> will refer to your fork. <strong>upstream</strong> will refer to the original workshop repository. We will set both remotes during the activity.</p>
+</div></section>
+
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on setup</span><span class="slide-no"></span></div>
+<h2>Install Git if needed, then verify that the terminal can find it.</h2>
+<div class="columns">
+<div class="block blue"><h3>Windows</h3>
+<p>The easiest option is the Git for Windows installer. A terminal option is also available through Windows Package Manager.</p>
+<div class="code"><span class="cmd">winget install</span> <span class="arg">--id Git.Git -e --source winget</span></div>
+</div>
+<div class="block orange"><h3>macOS</h3>
+<p>macOS may already have Git available. If it does not, install the command line tools, or use Homebrew if it is already installed.</p>
+<div class="code"><span class="cmd">xcode-select</span> <span class="arg">--install</span>
+<span class="comment"># or, if Homebrew is already installed</span>
+<span class="cmd">brew install</span> <span class="arg">git</span></div>
+</div>
+</div>
+<div class="code large" style="margin-top:24px"><span class="cmd">git</span> <span class="arg">--version</span></div>
+<div class="footer-note">You will also need a GitHub account, VS Code, and a browser signed into GitHub.</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on setup</span><span class="slide-no"></span></div>
+<h2>Configure the name and email that Git will attach to your commits.</h2>
+<div class="code large"><span class="cmd">git config</span> <span class="arg">--global user.name</span> "Your Name"
+<span class="cmd">git config</span> <span class="arg">--global user.email</span> "you@example.com"</div>
+<div class="command-table" style="margin-top:24px">
+<div class="command-row"><code>git config</code><span>This command reads or changes Git configuration.</span></div>
+<div class="command-row"><code>--global</code><span>This stores the setting as the default for your user account on this computer instead of limiting it to one repository.</span></div>
+<div class="command-row"><code>user.name / user.email</code><span>These values become the author information stored with commits you create. They make the history show who created each commit, and GitHub can associate a commit with your account when the commit email matches an email connected to that account.</span></div>
+</div>
+<div class="callout">Commit authorship matters because a repository history is shared by many people. The name and email make it possible to identify who created a change later, instead of leaving the commit anonymous.</div></div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on 1</span><span class="slide-no"></span></div>
+<h2>Fork the workshop repository, then clone your fork.</h2>
+<div class="code large"><span class="cmd">git clone</span> <span class="arg">https://github.com/YOUR-USERNAME/workshop-repo.git</span>
+<span class="cmd">cd</span> <span class="arg">workshop-repo</span>
+<span class="cmd">git remote add</span> <span class="arg">upstream https://github.com/OWNER/workshop-repo.git</span>
+<span class="cmd">git remote</span> <span class="arg">-v</span></div>
+<div class="command-table" style="margin-top:22px">
+<div class="command-row"><code>git clone &lt;your-fork-url&gt;</code><span>Downloads your fork, its files, and its Git history to your computer. Git automatically names the repository you cloned origin.</span></div>
+<div class="command-row"><code>cd workshop-repo</code><span>Changes the terminal's current directory so the next Git commands run inside the cloned project.</span></div>
+<div class="command-row"><code>git remote add upstream &lt;url&gt;</code><span>Adds a second remote named upstream that points to the original workshop repository.</span></div>
+<div class="command-row"><code>git remote -v</code><span>Shows both saved remote names and URLs. You should see origin pointing to your fork and upstream pointing to the original repository.</span></div></div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on 2</span><span class="slide-no"></span></div>
+<h2>Create a branch, make a change, and look at how VS Code labels the files.</h2>
+<div class="columns" style="grid-template-columns:.75fr 1.25fr">
+<div>
+<div class="code"><span class="cmd">git switch</span> <span class="arg">-c profile-yourname</span></div>
+<p style="margin-top:18px"><code>switch</code> changes branches. The <code>-c</code> option creates a new branch before switching to it.</p>
+<p>Edit only your assigned JSON file inside <code>profiles/</code>. Save the file before checking Source Control.</p>
+</div>
+<div class="columns" style="grid-template-columns:1.25fr .75fr;gap:20px">
+<img alt="VS Code Source Control markers showing modified and untracked files" class="status-shot" src="vscode-markers.png"/>
+<div class="legend">
+<div class="legend-row"><span class="tag m">M</span><div><h3>Modified</h3><p>A tracked file has changed since the last commit.</p></div></div>
+<div class="legend-row"><span class="tag u">U</span><div><h3>Untracked</h3><p>A new file exists but has not been included in Git history yet.</p></div></div>
+</div>
+</div>
+</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on 3</span><span class="slide-no"></span></div>
+<h2>Inspect the changes, then stage the files you want in the next commit.</h2>
+<div class="code large"><span class="cmd">git status</span></div>
+<div class="command-table" style="margin-top:22px">
+<div class="command-row"><code>git add profiles/student-01.json</code><span>Stages your assigned profile file.</span></div>
+<div class="command-row"><code>git add profiles/</code><span>Stages changes inside that folder.</span></div>
+<div class="command-row"><code>git add .</code><span>Stages changes under the current directory. Run <code>git status</code> first so you know what will be included.</span></div>
+</div>
+<div class="callout">Run <code>git status</code> again after staging. The file should now appear as a change that is ready to be committed.</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on 4</span><span class="slide-no"></span></div>
+<h2>Create a local commit, then push your branch to your fork.</h2>
+<div class="columns">
+<div>
+<div class="code large"><span class="cmd">git commit</span> <span class="arg">-m</span> "Add Ibrahim profile"</div>
+<p style="margin-top:16px"><code>git commit</code> records the staged changes. The <code>-m</code> option lets you provide the commit message directly in the command.</p>
+</div>
+<div>
+<div class="code large"><span class="cmd">git push</span> <span class="arg">-u origin profile-yourname</span></div>
+<p style="margin-top:16px"><code>push</code> sends your local commits to a remote repository. In this workflow, <code>origin</code> is your fork on GitHub. The final argument is the branch being pushed.</p>
+<p>The <code>-u</code> option records the tracking relationship, so later pushes from the same branch can usually be written as <code>git push</code>.</p>
+</div>
+</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Hands-on 5</span><span class="slide-no"></span></div>
+<h2>Open a pull request, merge it into main, then update your local copy.</h2>
+<div class="columns">
+<ol class="steps">
+<li>Open your fork on GitHub and start a pull request.</li>
+<li>Set the base repository to the original workshop repository and the base branch to main. Your compare branch should be the branch from your fork.</li>
+<li>Read the diff so you can see exactly what your branch changes.</li>
+<li>I will merge the pull request into main on the original repository.</li>
+</ol>
+<div>
+<p>After the merge, the original repository's <code>main</code> branch has the new work, but your local <code>main</code> branch is still the older version.</p>
+<div class="code large"><span class="cmd">git switch</span> <span class="arg">main</span>
+<span class="cmd">git pull</span> <span class="arg">upstream main</span></div>
+<p style="margin-top:16px">We switch to <code>main</code> first because <code>git pull</code> updates the branch that is currently checked out. Here, <code>upstream</code> is the original workshop repository, so pulling from it brings the merged class changes into your local copy.</p>
+</div>
+</div>
+</div></section>
+<section class="slide practice-slide"><div class="frame">
+<div class="topline"><span class="section">Practice</span><span class="slide-no"></span></div>
+<h2>Practice the workflow once from fork to pull request.</h2>
+<ol class="steps">
+<li>Fork the workshop repository, clone your fork, and add upstream.</li>
+<li>Create a branch from main, then make and save one small change.</li>
+<li>Run git status, stage the intended change, and commit it.</li>
+<li>Push your branch to origin and open a pull request to the original repository.</li>
+<li>After it is merged, switch to main and pull from upstream.</li>
+</ol>
+<div class="footer-note">The goal is to remember the order and purpose of the steps. It is fine to use the command sheet for syntax.</div>
+</div></section>
+<section class="slide"><div class="frame">
+<div class="topline"><span class="section">Command sheet</span><span class="slide-no"></span></div>
+<h2>Commands used in this session</h2>
+<div class="columns">
+<div class="code"><span class="cmd">git</span> --version
+<span class="cmd">git config</span> --global user.name "Name"
+<span class="cmd">git config</span> --global user.email "email"
+<span class="cmd">git clone</span> &lt;your-fork-url&gt;
+<span class="cmd">cd</span> &lt;folder&gt;
+<span class="cmd">git remote add</span> upstream &lt;original-url&gt;
+<span class="cmd">git remote</span> -v
+<span class="cmd">git switch</span> -c &lt;branch&gt;</div>
+<div class="code"><span class="cmd">git status</span>
+<span class="cmd">git add</span> &lt;file&gt;
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> -m "message"
+<span class="cmd">git push</span> -u origin &lt;branch&gt;
+<span class="cmd">git switch</span> main
+<span class="cmd">git pull</span> upstream main</div>
+</div>
+</div></section>
+<div class="controls"><button aria-label="Previous slide" id="prev">←</button><button aria-label="Next slide" id="next">→</button></div>
+<div class="progress" id="progress"></div>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let index=0;
+const progress=document.getElementById('progress');
+function show(i){
+  index=Math.max(0,Math.min(i,slides.length-1));
+  slides.forEach((s,n)=>s.classList.toggle('active',n===index));
+  slides.forEach((s,n)=>{const el=s.querySelector('.slide-no'); if(el) el.textContent=`${n+1} / ${slides.length}`});
+  progress.style.width=((index+1)/slides.length*100)+'%';
+  history.replaceState(null,'',`#${index+1}`);
+}
+function next(){show(index+1)} function prev(){show(index-1)}
+document.getElementById('next').addEventListener('click',next);
+document.getElementById('prev').addEventListener('click',prev);
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+const initial=parseInt(location.hash.replace('#',''),10); show(Number.isFinite(initial)?initial-1:0);
+</script>
+</body>
+</html>
