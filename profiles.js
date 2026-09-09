@@ -4,18 +4,31 @@ const profileFiles = [
 ];
 
 const contributions = document.getElementById("contributions");
+const labels = {
+  major: "Major",
+  learning: "Wants to build or learn",
+  favorite: "Favorite language or tool"
+};
 
 function addProfile(profile) {
-  if (!profile.name || !profile.major || !profile.learning || !profile.favorite) return;
+  if (!profile.name) return;
 
   const card = document.createElement("article");
   card.className = "contribution";
-  card.innerHTML = `<h2></h2><p><strong>Major:</strong> </p><p><strong>Wants to build or learn:</strong> </p><p><strong>Favorite language or tool:</strong> </p>`;
-  const fields = card.querySelectorAll("h2, p");
-  fields[0].textContent = profile.name;
-  fields[1].append(profile.major);
-  fields[2].append(profile.learning);
-  fields[3].append(profile.favorite);
+  const heading = document.createElement("h2");
+  heading.textContent = profile.name;
+  card.append(heading);
+
+  Object.entries(profile)
+    .filter(([key, value]) => key !== "name" && value)
+    .forEach(([key, value]) => {
+      const line = document.createElement("p");
+      const label = document.createElement("strong");
+      label.textContent = `${labels[key] || `${key.charAt(0).toUpperCase()}${key.slice(1)}`}:`;
+      line.append(label, ` ${value}`);
+      card.append(line);
+    });
+
   contributions.append(card);
 }
 
