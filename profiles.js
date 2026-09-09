@@ -1,9 +1,5 @@
-const profileFiles = [
-  "profiles/example.json",
-  ...Array.from({ length: 20 }, (_, index) => `profiles/student-${String(index + 1).padStart(2, "0")}.json`)
-];
-
 const contributions = document.getElementById("contributions");
+const repository = "ibrahim-alii/git-and-github-101";
 const labels = {
   major: "Major",
   learning: "Wants to build or learn",
@@ -32,8 +28,9 @@ function addProfile(profile) {
   contributions.append(card);
 }
 
-Promise.all(
-  profileFiles.map((file) => fetch(file)
-    .then((response) => response.ok ? response.json() : null)
-    .catch(() => null))
-).then((profiles) => profiles.filter(Boolean).forEach(addProfile));
+fetch(`https://api.github.com/repos/${repository}/contents/profiles`)
+  .then((response) => response.ok ? response.json() : Promise.reject(response.status))
+  .then((files) => files.filter((file) => file.name.endsWith(".json") && file.name !== "template.json"))
+  .then((files) => Promise.all(files.map((file) => fetch(file.download_url).then((response) => response.json()))))
+  .then((profiles) => profiles.forEach(addProfile))
+  .catch((error) => console.error("Could not load profiles:", error));
