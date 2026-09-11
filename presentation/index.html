@@ -71,6 +71,7 @@ code{font-family:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace}
 .tag{width:30px;height:30px;border:1px solid currentColor;display:grid;place-items:center;font:700 17px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace}
 .tag.u{color:#2469a0}.tag.m{color:#b15a00}
 .branch-map{font:17px/1.8 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;background:#fff;border:1px solid #b7b7b7;padding:20px}
+.branch-image{display:block;width:min(100%,820px);max-height:min(38vh,365px);margin:0 auto 18px;object-fit:contain;border:1px solid #b7b7b7;background:#fff}
 .controls{position:absolute;right:24px;bottom:18px;display:flex;gap:6px;z-index:10}
 .controls button{border:1px solid #999;background:#fff;color:var(--ink);padding:7px 11px;font:600 14px "Inter", "Helvetica Neue", Arial, sans-serif;cursor:pointer}
 .controls button:hover{background:#f3f3f3}
@@ -149,15 +150,7 @@ h2 code{font-family:inherit;font-size:inherit;font-weight:inherit;letter-spacing
 <h2>Branches keep work separate from <code>main</code>.</h2>
 
 <div>
-<div class="branch-flow">
-<div class="flow-step"><strong>main</strong><span>The shared starting point for the project.</span></div>
-<div class="flow-arrow">→</div>
-<div class="flow-step"><strong>Create a branch</strong><span>The branch starts from the current commit on main.</span></div>
-<div class="flow-arrow">→</div>
-<div class="flow-step"><strong>Make commits</strong><span>Your work continues on the branch without changing main.</span></div>
-<div class="flow-arrow">→</div>
-<div class="flow-step"><strong>Merge later</strong><span>A pull request can bring the branch changes back into main after review.</span></div>
-</div>
+<img alt="Git branch diagram showing master, develop, and two feature branches" class="branch-image" src="branches.png"/>
 <p style="margin-top:20px">A branch is another line of development inside the same Git history. It does not create a separate project folder. The arrows show the order of the workflow, not files being physically moved from one box to another.</p>
 <p>A pull request asks to merge one branch into another. After the pull request is merged, other local copies still need to pull the updated branch before they can see the new commits.</p>
 </div>
